@@ -1,4 +1,6 @@
 sudo: required
+language: generic
+
 services:
   - docker
 
@@ -9,13 +11,14 @@ script:
   - docker run -e CI=true tobyfintops/react-test npm test
 
 after_success:
-  - docker build -t tobyfintops/multi-client -f ./client
-  - docker build -t tobyfintops/multi-server -f ./server
-  - docker build -t tobyfintops/multi-nginx -f ./nginx
-  - docker build -t tobyfintops/multi-worker -f ./worker
+  - docker build -t tobyfintops/multi-client ./client
+  - docker build -t tobyfintops/multi-nginx ./nginx
+  - docker build -t tobyfintops/multi-server ./server
+  - docker build -t tobyfintops/multi-worker ./worker
+  # Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
   - docker push tobyfintops/multi-client
-  - docker push tobyfintops/multi-server
   - docker push tobyfintops/multi-nginx
+  - docker push tobyfintops/multi-server
   - docker push tobyfintops/multi-worker
-
