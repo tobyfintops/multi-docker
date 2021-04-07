@@ -1,0 +1,21 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t tobyfintops/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true tobyfintops/react-test npm test
+
+after_success:
+  - docker build -t tobyfintops/multi-client -f ./client
+  - docker build -t tobyfintops/multi-server -f ./server
+  - docker build -t tobyfintops/multi-nginx -f ./nginx
+  - docker build -t tobyfintops/multi-worker -f ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push tobyfintops/multi-client
+  - docker push tobyfintops/multi-server
+  - docker push tobyfintops/multi-nginx
+  - docker push tobyfintops/multi-worker
+
