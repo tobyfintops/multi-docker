@@ -22,3 +22,15 @@ after_success:
   - docker push tobyfintops/multi-nginx
   - docker push tobyfintops/multi-server
   - docker push tobyfintops/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: 'eu-west-3'
+  app: 'multi-docker'
+  env: 'Multidocker-env'
+  bucket_name: 'elasticbeanstalk-eu-west-3-598012314824'
+  bucket_path: 'docker-multi'
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
